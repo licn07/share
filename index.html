@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiCN图库</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background: #f5f5f5;
+        }
+        /* 弹窗遮罩 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content h2 {
+            margin-bottom: 25px;
+            color: #333;
+        }
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-namecard {
+            background: #2196F3;
+            color: white;
+        }
+        .btn-namecard:hover {
+            background: #1976D2;
+        }
+        .btn-poster {
+            background: #FF5722;
+            color: white;
+        }
+        .btn-poster:hover {
+            background: #E64A19;
+        }
+        /* 通用页面样式 */
+        .page {
+            display: none;
+            padding: 20px;
+        }
+        .page.active {
+            display: block;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .tips {
+            background: #f0f4f8;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .tips p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .tips .red {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .gallery {
+            display: grid;
+            gap: 25px;
+        }
+        .namecard-gallery {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+        .poster-gallery {
+            grid-template-columns: repeat(3, 1fr); /* 每行3张图片 */
+            gap: 15px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+        }
+        .card img, .poster-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card img:hover, .poster-item img:hover {
+            transform: scale(1.05);
+        }
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        .download-btn:hover {
+            background: #1976D2;
+        }
+        .card .number, .poster-item .filename {
+            color: #666;
+            font-size: 14px;
+        }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 8px 16px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- 首页弹窗 -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <h2>欢迎进入 LiCN 图库</h2>
+            <div class="btn-group">
+                <button class="btn btn-namecard" onclick="showPage('namecardPage')">进入名片图库</button>
+                <button class="btn btn-poster" onclick="showPage('posterPage')">进入海报图库</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 名片图库页面 -->
+    <div id="namecardPage" class="page">
+        <button class="back-btn" onclick="showPage('modal')">返回</button>
+        <header>
+            <h1>LiCN名片图库</h1>
+        </header>
+        <div class="tips">
+            <p>有图就会更新下去，点击图片可放大</p>
+            <p class="red">首次加载慢请用WiFi</p>
+        </div>
+        <div class="gallery namecard-gallery" id="namecard-gallery"></div>
+    </div>
+
+    <!-- 海报图库页面 -->
+    <div id="posterPage" class="page">
+        <button class="back-btn" onclick="showPage('modal')">返回</button>
+        <header>
+            <h1>LiCN海报图库</h1>
+            <p>都是测试过的</p>
+            <p class="red">首次加载较慢见谅因为服务区在国外抱歉</p>
+        </header>
+        <div class="gallery poster-gallery" id="poster-gallery"></div>
+    </div>
+
+    <script>
+        // 页面切换函数
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page, .modal-overlay').forEach(el => {
+                el.classList.remove('active');
+            });
+            // 显示目标页面
+            if (pageId === 'modal') {
+                document.getElementById('modal').style.display = 'flex';
+            } else {
+                document.getElementById('modal').style.display = 'none';
+                document.getElementById(pageId).classList.add('active');
+            }
+        }
+
+        // 生成名片图库
+        const namecardGallery = document.getElementById('namecard-gallery');
+        for (let i = 1; i <= 500; i++) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${i}.jpg" alt="名片${i}" onclick="this.style.transform='scale(1.1)'">
+                <button class="download-btn" onclick="window.open('${i}.jpg')">下载图片</button>
+                <div class="number">编号${i}</div>
+            `;
+            namecardGallery.appendChild(card);
+        }
+
+        // 生成海报图库
+        const posterGallery = document.getElementById('poster-gallery');
+        for (let i = 1; i <= 500; i++) {
+            const item = document.createElement('div');
+            item.className = 'poster-item';
+            item.innerHTML = `
+                <img src="${i}.png" alt="海报${i}" onclick="this.style.transform='scale(1.1)'">
+                <div class="filename">${i}.png</div>
+            `;
+            posterGallery.appendChild(item);
+        }
+    </script>
+</body>
+</html>
