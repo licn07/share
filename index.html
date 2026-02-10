@@ -106,7 +106,7 @@
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         }
         .poster-gallery {
-            grid-template-columns: repeat(3, 1fr); /* 每行3张图片 */
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
         }
         .card {
@@ -218,7 +218,9 @@
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
-                <img src="${i}.jpg" alt="名片${i}" onclick="this.style.transform='scale(1.1)'">
+                <img src="${i}.jpg" alt="名片${i}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <div style="display:none; text-align:center; padding:20px; color:#999;">图片加载失败</div>
                 <button class="download-btn" onclick="window.open('${i}.jpg')">下载图片</button>
                 <div class="number">编号${i}</div>
             `;
@@ -231,11 +233,5 @@
             const item = document.createElement('div');
             item.className = 'poster-item';
             item.innerHTML = `
-                <img src="${i}.png" alt="海报${i}" onclick="this.style.transform='scale(1.1)'">
-                <div class="filename">${i}.png</div>
-            `;
-            posterGallery.appendChild(item);
-        }
-    </script>
-</body>
-</html>
+                <img src="${i}.png" alt="海报${i}" 
+                     onerror="this.style.display='none'; this.nextElement
