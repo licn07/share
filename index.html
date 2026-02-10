@@ -43,11 +43,18 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            padding-bottom: 10px;
         }
         .item img {
             width: 100%;
             height: auto;
             display: block;
+            margin-bottom: 8px;
+        }
+        .filename {
+            font-size: 14px;
+            color: #666;
         }
 
         /* 弹窗遮罩 */
@@ -143,7 +150,10 @@
         for (let i = 1; i <= total; i++) {
             const item = document.createElement('div');
             item.className = 'item';
-            item.innerHTML = `<img src="${i}.jpg" alt="名片${i}">`;
+            item.innerHTML = `
+                <img src="${i}.jpg" alt="名片${i}">
+                <div class="filename">${i}.jpg</div>
+            `;
             grid.appendChild(item);
         }
     }
@@ -154,7 +164,10 @@
         for (let i = 1; i <= total; i++) {
             const item = document.createElement('div');
             item.className = 'item';
-            item.innerHTML = `<img src="${i}.png" alt="海报${i}">`;
+            item.innerHTML = `
+                <img src="${i}.png" alt="海报${i}">
+                <div class="filename">${i}.png</div>
+            `;
             grid.appendChild(item);
         }
     }
