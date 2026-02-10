@@ -43,11 +43,18 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 10px;
+            text-align: center;
         }
         .item img {
             width: 100%;
             height: auto;
             display: block;
+            margin-bottom: 10px;
+        }
+        .error-msg {
+            color: #f56c6c;
+            font-size: 14px;
         }
 
         /* 弹窗遮罩 */
@@ -140,10 +147,21 @@
     // 渲染名片：card_1.jpg ~ card_500.jpg
     function renderCards() {
         const grid = document.getElementById('cardGrid');
+        grid.innerHTML = ''; // 清空容器
         for (let i = 1; i <= total; i++) {
             const item = document.createElement('div');
             item.className = 'item';
-            item.innerHTML = `<img src="card_${i}.jpg" alt="名片${i}">`;
+            const img = document.createElement('img');
+            img.src = `card_${i}.jpg`;
+            img.alt = `名片${i}`;
+            img.onerror = function() {
+                console.error(`加载失败: card_${i}.jpg`);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-msg';
+                errorMsg.textContent = `❌ 名片${i} 加载失败`;
+                item.appendChild(errorMsg);
+            };
+            item.appendChild(img);
             grid.appendChild(item);
         }
     }
@@ -151,10 +169,21 @@
     // 渲染海报：poster_1.png ~ poster_500.png
     function renderPosters() {
         const grid = document.getElementById('posterGrid');
+        grid.innerHTML = ''; // 清空容器
         for (let i = 1; i <= total; i++) {
             const item = document.createElement('div');
             item.className = 'item';
-            item.innerHTML = `<img src="poster_${i}.png" alt="海报${i}">`;
+            const img = document.createElement('img');
+            img.src = `poster_${i}.png`;
+            img.alt = `海报${i}`;
+            img.onerror = function() {
+                console.error(`加载失败: poster_${i}.png`);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-msg';
+                errorMsg.textContent = `❌ 海报${i} 加载失败`;
+                item.appendChild(errorMsg);
+            };
+            item.appendChild(img);
             grid.appendChild(item);
         }
     }
