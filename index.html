@@ -199,16 +199,15 @@
     <script>
         // 页面切换函数
         function showPage(pageId) {
-            // 隐藏所有页面
+            // 隐藏所有页面和弹窗
             document.querySelectorAll('.page, .modal-overlay').forEach(el => {
-                el.classList.remove('active');
+                el.style.display = 'none';
             });
-            // 显示目标页面
+            // 显示目标页面或弹窗
             if (pageId === 'modal') {
                 document.getElementById('modal').style.display = 'flex';
             } else {
-                document.getElementById('modal').style.display = 'none';
-                document.getElementById(pageId).classList.add('active');
+                document.getElementById(pageId).style.display = 'block';
             }
         }
 
@@ -234,4 +233,5 @@
             item.className = 'poster-item';
             item.innerHTML = `
                 <img src="${i}.png" alt="海报${i}" 
-                     onerror="this.style.display='none'; this.nextElement
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <div style="display:non
